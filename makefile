@@ -13,8 +13,8 @@ MAKEFLAGS+="j "
 #TARGET    := $(notdir $(CURDIR))
 TARGET    := emsesp
 BUILD     := build
-SOURCES   := src lib_standalone lib/rtcvars lib/uuid-common/src lib/uuid-console/src lib/uuid-log/src src/devices src/test
-INCLUDES  := lib_standalone/ArduinoJson/src lib_standalone lib/rtcvars lib/uuid-common/src lib/uuid-console/src lib/uuid-log/src lib/uuid-telnet/src lib/uuid-syslog/src src/devices src
+SOURCES   := src lib_standalone lib/uuid-common/src lib/uuid-console/src lib/uuid-log/src src/devices src/test
+INCLUDES  := lib_standalone/ArduinoJson/src lib_standalone lib/uuid-common/src lib/uuid-console/src lib/uuid-log/src lib/uuid-telnet/src lib/uuid-syslog/src src/devices src
 LIBRARIES := 
 
 #----------------------------------------------------------------------
@@ -26,7 +26,7 @@ CXX_STANDARD := -std=c++11
 #----------------------------------------------------------------------
 # Defined Symbols
 #----------------------------------------------------------------------
-DEFINES += -DARDUINOJSON_ENABLE_STD_STRING=1 -DEMSESP_DEBUG -DEMSESP_STANDALONE
+DEFINES += -DARDUINOJSON_ENABLE_STD_STRING=1 -DARDUINOJSON_ENABLE_ARDUINO_STRING -DEMSESP_DEBUG -DEMSESP_STANDALONE -DEMSESP_NO_LED
 
 #----------------------------------------------------------------------
 # Sources & Files
@@ -66,6 +66,7 @@ CPPFLAGS  += -Os
 
 CFLAGS    += $(CPPFLAGS)
 CFLAGS    += -Wall
+CFLAGS    += -Wno-unused -Wno-restrict
 CFLAGS    += -Wextra
 
 CXXFLAGS  += $(CFLAGS) -MMD

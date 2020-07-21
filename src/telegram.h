@@ -129,6 +129,8 @@ class EMSbus {
     static constexpr uint8_t EMS_MASK_HT3     = 0x80; // EMS bus type Junkers/HT3
     static constexpr uint8_t EMS_MASK_BUDERUS = 0xFF; // EMS bus type Buderus
 
+    static constexpr uint8_t EMS_TX_ERROR_LIMIT = 10; // % limit of failed Tx read/write attempts before showing a warning
+
     static bool bus_connected() {
 #ifndef EMSESP_STANDALONE
         if ((uuid::get_uptime() - last_bus_activity_) > EMS_BUS_TIMEOUT) {
@@ -245,8 +247,7 @@ class RxService : public EMSbus {
     }
 
   private:
-    static constexpr uint32_t RX_LOOP_WAIT   = 800; // delay in processing Rx queue
-    uint32_t                  last_rx_check_ = 0;
+    uint32_t last_rx_check_ = 0;
 
     uint8_t rx_telegram_id_ = 0; // queue counter
 
@@ -258,7 +259,7 @@ class RxService : public EMSbus {
 
 class TxService : public EMSbus {
   public:
-    static constexpr size_t MAX_TX_TELEGRAMS = 40; // size of Tx queue
+    static constexpr size_t MAX_TX_TELEGRAMS = 30; // size of Tx queue
 
     static constexpr uint8_t TX_WRITE_FAIL    = 4;
     static constexpr uint8_t TX_WRITE_SUCCESS = 1;
@@ -270,7 +271,13 @@ class TxService : public EMSbus {
     void loop();
     void send();
 
-    void add(const uint8_t operation, const uint8_t dest, const uint16_t type_id, const uint8_t offset, uint8_t * message_data, const uint8_t message_length, const bool front = false);
+    void add(const uint8_t  operation,
+             const uint8_t  dest,
+             const uint16_t type_id,
+             const uint8_t  offset,
+             uint8_t *      message_data,
+             const uint8_t  message_length,
+             const bool     front = false);
     void add(const uint8_t operation, const uint8_t * data, const uint8_t length, const bool front = false);
 
     void read_request(const uint16_t type_id, const uint8_t dest, const uint8_t offset = 0);
